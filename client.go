@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-// RunClient will run the Snicksnack client
-func RunClient() {
-	fmt.Println("RunClient")
+// StartClient will run the Snicksnack client
+func StartClient() {
+	fmt.Println("StartClient")
 }

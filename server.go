@@ -9,7 +9,12 @@ const (
 	port = "8080"
 )
 
-var connections []net.Conn
+type user struct {
+	connection net.Conn
+	name       string
+}
+
+var users []user
 
 // StartServer starts the Snicksnack server
 func StartServer() {
@@ -26,18 +31,20 @@ func StartServer() {
 			fmt.Println("An error occured")
 		}
 
-		connections = append(connections, connection)
 		go handleConnection(connection)
+		fmt.Println("Users ", users)
 	}
 }
 
 func handleConnection(conn net.Conn) {
-	defer conn.Close()
-	fmt.Println("Connection incoming")
-	fmt.Println("Connections: ", len(connections))
+	_, _ = fmt.Fprint(conn, "Name: ")
+	var name string
+	_, _ = fmt.Fscanln(conn, &name)
+	users = append(users, user{conn, name})
 
-	data := make([]byte, 1024)
-	_, _ = conn.Read(data)
-	fmt.Println(string(data))
+	for _, user := range users {
+		_, _ = fmt.Fprintf(user.connection, "%v connected!\n", name)
+
+	}
 
 }
