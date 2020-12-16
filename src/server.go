@@ -51,12 +51,18 @@ func handleConnection(conn net.Conn) {
 		scanner := bufio.NewScanner(conn)
 		if scanner.Scan() {
 
+			message := scanner.Text()
+
+			if message == "exit" {
+				break
+			}
+
 			for _, user := range users {
 				if user.connection == conn {
 					continue
 				}
 
-				_, err := fmt.Fprintf(user.connection, "%v: %v\n", name, scanner.Text())
+				_, err := fmt.Fprintf(user.connection, "%v: %v\n", name, message)
 				if err != nil {
 					fmt.Println("Error sending message to peers. ", err.Error())
 				}
@@ -66,5 +72,4 @@ func handleConnection(conn net.Conn) {
 	}
 
 	conn.Close()
-
 }
