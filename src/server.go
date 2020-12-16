@@ -44,7 +44,29 @@ func handleConnection(conn net.Conn) {
 
 	for _, user := range users {
 		_, _ = fmt.Fprintf(user.connection, "%v connected!\n", name)
-
 	}
+
+	for {
+		var incomingMessage string
+		fmt.Fscanf(conn, "%v\n", &incomingMessage)
+
+		if incomingMessage == "exit" {
+			break
+		}
+
+		// TODO - Create a []byte chunk in memory and read into it
+
+		fmt.Println("LOG: ", incomingMessage)
+
+		for _, user := range users {
+			if user.connection == conn {
+				continue
+			}
+
+			_, _ = fmt.Fprintf(user.connection, "%v: %v\n", name, incomingMessage)
+		}
+	}
+
+	conn.Close()
 
 }
