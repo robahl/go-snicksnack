@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"net"
 )
@@ -47,24 +48,21 @@ func handleConnection(conn net.Conn) {
 	}
 
 	for {
-		var incomingMessage string
-		fmt.Fscanf(conn, "%v\n", &incomingMessage)
+		scanner := bufio.NewScanner(conn)
+		if scanner.Scan() {
 
-		if incomingMessage == "exit" {
-			break
-		}
+			for _, user := range users {
+				if user.connection == conn {
+					continue
+				}
 
-		// TODO - Create a []byte chunk in memory and read into it
-
-		fmt.Println("LOG: ", incomingMessage)
-
-		for _, user := range users {
-			if user.connection == conn {
-				continue
+				_, err := fmt.Fprintf(user.connection, "%v: %v\n", name, scanner.Text())
+				if err != nil {
+					fmt.Println("Error sending message to peers. ", err.Error())
+				}
 			}
-
-			_, _ = fmt.Fprintf(user.connection, "%v: %v\n", name, incomingMessage)
 		}
+
 	}
 
 	conn.Close()
