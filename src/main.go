@@ -1,19 +1,17 @@
 package main
 
 import (
-	"fmt"
-	"os"
+	"flag"
 )
 
 func main() {
-	if len(os.Args) < 2 {
-		fmt.Println("server or client?")
-		return
-	}
+	server := flag.Bool("s", false, "Start a server")
+	port := flag.String("p", "8080", "Port number")
+	flag.Parse()
 
-	if os.Args[1] == "server" {
-		StartServer()
-	} else if os.Args[1] == "client" {
-		StartClient()
+	if *server {
+		StartServer(*port)
+	} else {
+		StartClient(*port)
 	}
 }

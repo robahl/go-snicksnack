@@ -6,10 +6,6 @@ import (
 	"net"
 )
 
-const (
-	port = "8080"
-)
-
 type user struct {
 	connection net.Conn
 	name       string
@@ -18,7 +14,7 @@ type user struct {
 var users []user
 
 // StartServer starts the Snicksnack server
-func StartServer() {
+func StartServer(port string) {
 	listener, err := net.Listen("tcp", ":"+port)
 	if err != nil {
 		fmt.Println("An error occured")
